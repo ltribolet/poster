@@ -39,7 +39,7 @@ composer install # this is inside container
 
 This will build all images and run the stack.
 
-You'll be able to access : [poster.dev](poster.dev)
+You'll be able to access : [poster.dev](http://poster.dev)
 
 ## Debug
 
