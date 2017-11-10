@@ -1,0 +1,38 @@
+version: '3'
+services:
+    nginx:
+        image: nginx:latest
+        ports:
+            - "0.0.0.0:80:80"
+        links:
+            - fpm
+        volumes:
+            - ./:/var/www/poster
+            - ./docker/nginx/vhost.conf:/etc/nginx/conf.d/poster.conf
+        working_dir:
+            /var/www/poster
+    fpm:
+        build: ./docker/php-fpm
+        ports:
+            - "0.0.0.0:9000:9000"
+        links:
+            - db
+        volumes:
+            - ./:/var/www/poster
+        working_dir:
+            /var/www/poster
+
+    db:
+        image: mysql:5.7
+        ports:
+            - "0.0.0.0:3360:3360"
+        volumes:
+            - data:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: password
+            MYSQL_DATABASE: poster
+            MYSQL_USER: poster
+            MYSQL_PASSWORD: posterpass
+
+volumes:
+    data:
