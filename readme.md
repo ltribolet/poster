@@ -35,6 +35,8 @@ git clone git@github.com:ltribolet/poster.git && cd poster
 docker-compose up -d
 docker-compose exec fpm bash
 composer install # this is inside container
+cp .env.example .env
+php artisan key:generate # copy and paste this key in the APP_KEY section of the .env file
 ```
 
 This will build all images and run the stack.
