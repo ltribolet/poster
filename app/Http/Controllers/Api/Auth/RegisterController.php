@@ -8,18 +8,21 @@ use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\HttpFoundation\Response;
 
 class RegisterController extends Controller
 {
+    const API_LOGIN_URI = '/api/login';
+
     /**
      * Register api
      *
+     * @param Request $request
+     *
      * @return \Illuminate\Http\Response
      */
-
-    public function register(Request $request)
+    public function register(Request $request) : \Illuminate\Http\Response
     {
-
         $validator = Validator::make(
             $request->all(),
             [
@@ -30,20 +33,18 @@ class RegisterController extends Controller
         );
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
+            return response()->json(['error' => $validator->errors()], Response::HTTP_UNAUTHORIZED);
         }
 
         $input = $modifiedInput = $request->all();
         $modifiedInput['password'] = bcrypt($input['password']);
         $user = User::create($modifiedInput);
 
-        $request = Request::create('/api/login', 'POST', $input);
+        $request = Request::create(self::API_LOGIN_URI, 'POST', $input);
         $response = App::handle($request);
 
-        if ($response->getStatusCode() >= 400) {
-
+        if ($response->getStatusCode() >= Response::HTTP_BAD_REQUEST) {
             throw new HttpResponseException($response);
-
         }
 
         return $response;

@@ -5,6 +5,7 @@ namespace App\Services\Api;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use App\User;
 
@@ -24,7 +25,8 @@ class LoginProxy
 
     private $request;
 
-    public function __construct(Application $app) {
+    public function __construct(Application $app)
+    {
         $this->auth = $app->make('auth');
         $this->cookie = $app->make('cookie');
         $this->db = $app->make('DB');
@@ -40,15 +42,18 @@ class LoginProxy
      *
      * @return array
      */
-    public function attemptLogin($email, $password)
+    public function attemptLogin(string $email, string $password) : array
     {
         $user = User::where('email', $email)->first();
 
         if (!is_null($user)) {
-            return $this->proxy('password', [
-                'username' => $email,
-                'password' => $password
-            ]);
+            return $this->proxy(
+                'password',
+                [
+                    'username' => $email,
+                    'password' => $password,
+                ]
+            );
         }
 
         throw new UnauthorizedHttpException('');
@@ -62,11 +67,14 @@ class LoginProxy
      *
      * @return array
      */
-    public function attemptRefresh(string $refreshToken)
+    public function attemptRefresh(string $refreshToken) : array
     {
-        return $this->proxy('refresh_token', [
-            'refresh_token' => $refreshToken
-        ]);
+        return $this->proxy(
+            'refresh_token',
+            [
+                'refresh_token' => $refreshToken,
+            ]
+        );
     }
 
     /**
@@ -77,21 +85,22 @@ class LoginProxy
      *
      * @return array
      */
-    public function proxy($grantType, array $data = [])
+    public function proxy(string $grantType, array $data = []) : array
     {
-        $data = array_merge($data, [
-            'client_id'     => env('PASSWORD_CLIENT_ID'),
-            'client_secret' => env('PASSWORD_CLIENT_SECRET'),
-            'grant_type'    => $grantType
-        ]);
+        $data = array_merge(
+            $data,
+            [
+                'client_id' => env('PASSWORD_CLIENT_ID'),
+                'client_secret' => env('PASSWORD_CLIENT_SECRET'),
+                'grant_type' => $grantType,
+            ]
+        );
 
         $request = Request::create('/oauth/token', 'POST', $data);
         $response = $this->app->handle($request);
 
-        if ($response->getStatusCode() >= 400) {
-
+        if ($response->getStatusCode() >= Response::HTTP_BAD_REQUEST) {
             throw new HttpResponseException($response);
-
         }
 
         $data = json_decode($response->getContent());
@@ -105,9 +114,8 @@ class LoginProxy
 
     /**
      * Logs out the user. We revoke access token and refresh token.
-     * Also instruct the client to forget the refresh cookie.
      */
-    public function logout()
+    public function logout() : void
     {
         $accessToken = $this->auth->user()->token();
 
@@ -118,7 +126,8 @@ class LoginProxy
                 [
                     'revoked' => true,
                 ]
-            );
+            )
+        ;
 
         $accessToken->revoke();
     }
