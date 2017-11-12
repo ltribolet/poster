@@ -25,7 +25,7 @@ Thumbnail of Album could be configured to be built based on random pictures insi
 
 Album can be private, kinda public (not listed but if you have the url you can access it), public.
 
-Album can be downloaded or not.
+Album can be downloaded or not. On first upon request to download it would make a zip archive with a delimited lifetime (possibility to change in global preferences, maybe per album ?).
 
 ## smart albums
 
@@ -48,6 +48,8 @@ Per user you can have preferences for sorting, information display (exif or not,
 One user must be elevated to admin, that would be the person that would install Poster obviously. The person could choose to have like just a personal gallery (1 user = admin) or a shared hosting gallery (N users + 1 admin).
 If just one user, the homepage would be the user's album listing page.
 
+Possibility to download do not forbid right clic or other stinky schemes to disallow image downloading. It's just to be able to download the whole album directly.k
+
 There would be a dark and light theme.
 
 # Menu
@@ -55,6 +57,28 @@ There would be a dark and light theme.
 The menu would adapt depending on the context (homepage, albums, preferences, ...) to display relevant entries.
 
 For instance, on user's homepage you would have an entry for creating an album and uploading, but on album's page just an entry for uploading to this album. Same for informations, an album's page that would be the album's ones, on picture page (fullscreen) that would be picture's ones.
+
+## Homepage
+- home link
+- create album (possibility from another album)
+- upload
+- global preferences
+
+## Album
+- home link
+- create album (possibility from another album)
+- upload (pre-selected the current album)
+- download if enabled in preferences
+- global preferences
+- album preferences
+
+## Pictures
+- home link
+- create album
+- upload (pre-selected the current album)
+- global preferences
+- album preferences
+- exif information panel toggle
 
 # Database Schema
 
