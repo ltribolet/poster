@@ -48,7 +48,7 @@ Per user you can have preferences for sorting, information display (exif or not,
 One user must be elevated to admin, that would be the person that would install Poster obviously. The person could choose to have like just a personal gallery (1 user = admin) or a shared hosting gallery (N users + 1 admin).
 If just one user, the homepage would be the user's album listing page.
 
-Possibility to download do not forbid right clic or other stinky schemes to disallow image downloading. It's just to be able to download the whole album directly.k
+Possibility to download do not forbid right click or other stinky schemes to disallow image downloading. It's just to be able to download the whole album directly.k
 
 There would be a dark and light theme.
 
