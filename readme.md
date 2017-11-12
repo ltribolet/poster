@@ -37,6 +37,8 @@ docker-compose exec fpm bash
 composer install # this is inside container
 cp .env.example .env
 php artisan key:generate # copy and paste this key in the APP_KEY section of the .env file
+php artisan migrate
+php artisan passport:install # copy credentials into .env at PERSONAL_CLIENT_SECRET and PASSWORD_CLIENT_SECRET
 ```
 
 This will build all images and run the stack.
