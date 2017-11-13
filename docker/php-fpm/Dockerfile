@@ -1,8 +1,8 @@
 FROM php:7.1-fpm
 
 RUN apt-get update && apt-get install -y \
-    libmcrypt-dev git unzip && \
-    docker-php-ext-install pdo_mysql mcrypt
+  libmcrypt-dev git unzip && \
+  docker-php-ext-install pdo_mysql mcrypt
 
 # Install node
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash

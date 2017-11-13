@@ -5,6 +5,7 @@ var javascriptEntryPath = path.resolve(__dirname, 'resources/assets/js', 'app.js
 var htmlEntryPath = path.resolve(__dirname, 'resources/views', 'index.html')
 var cssEntryPath = path.resolve(__dirname, 'resources/assets/sass', 'app.scss')
 var buildPath = path.resolve(__dirname, 'public', 'build')
+var WebpackManifestPlugin = require('webpack-manifest-plugin')
 
 var HtmlWebpackPlugin = require('html-webpack-plugin')
 var HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
@@ -52,6 +53,7 @@ module.exports = {
     HtmlWebpackPluginConfig,
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin()
+    new webpack.NoEmitOnErrorsPlugin(),
+    new WebpackManifestPlugin()
   ]
 }
