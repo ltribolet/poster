@@ -23,6 +23,8 @@ Route::post(LOGIN_URI, 'Api\Auth\LoginController@login');
 Route::post(LOGIN_REFRESH_URI, 'Api\Auth\LoginController@refresh');
 Route::post(REGISTER_URI, 'Api\Auth\RegisterController@register');
 
+Route::get('/user/{user}', 'Api\UserController@get');
+
 Route::group(['middleware' => 'auth:api'], function(){
     Route::post(LOGOUT_URI, 'Api\Auth\LoginController@logout');
     ROute::get(USER_URI, 'Api\UserController@index');
