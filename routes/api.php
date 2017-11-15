@@ -13,19 +13,14 @@ use Illuminate\Http\Request;
 |
 */
 
-const LOGIN_URI = '/login';
-const LOGIN_REFRESH_URI = '/login/refresh';
 const REGISTER_URI = '/register';
 const LOGOUT_URI = '/logout';
 const USER_URI = '/user';
 
-Route::post(LOGIN_URI, 'Api\Auth\LoginController@login');
-Route::post(LOGIN_REFRESH_URI, 'Api\Auth\LoginController@refresh');
 Route::post(REGISTER_URI, 'Api\Auth\RegisterController@register');
 
 Route::get('/user/{user}', 'Api\UserController@get');
 
 Route::group(['middleware' => 'auth:api'], function(){
-    Route::post(LOGOUT_URI, 'Api\Auth\LoginController@logout');
-    ROute::get(USER_URI, 'Api\UserController@index');
+    Route::get(USER_URI, 'Api\UserController@index');
 });

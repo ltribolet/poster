@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Gate;
+use Route;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Laravel\Passport\Passport;
 
@@ -28,6 +28,15 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Passport::routes();
+
+        Route::post('oauth/token', [
+            'middleware' => 'password-grant',
+            'uses' => '\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken'
+        ]);
+        Route::post('oauth/token/refresh', [
+            'middleware' => ['web', 'auth', 'password-grant'],
+            'uses' => '\Laravel\Passport\Http\Controllers\TransientTokenController@refresh'
+        ]);
 
         Passport::tokensExpireIn(Carbon::now()->addMinute(10));
         Passport::refreshTokensExpireIn(Carbon::now()->addDays(30));
