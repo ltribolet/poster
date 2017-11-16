@@ -38,7 +38,8 @@ class AuthServiceProvider extends ServiceProvider
             'uses' => '\Laravel\Passport\Http\Controllers\TransientTokenController@refresh'
         ]);
 
-        Passport::tokensExpireIn(Carbon::now()->addMinute(10));
+        $tokenLifeTime = env('APP_ENV') === 'local' ? Carbon::now()->addYear() : Carbon::now()->addMinute(10);
+        Passport::tokensExpireIn($tokenLifeTime);
         Passport::refreshTokensExpireIn(Carbon::now()->addDays(30));
     }
 }

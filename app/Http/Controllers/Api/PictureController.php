@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Picture as PictureResource;
 use App\Http\Resources\PictureCollection;
 use App\Models\Album;
 use App\Models\Picture;
@@ -14,9 +15,9 @@ use Symfony\Component\HttpFoundation\Response;
 class PictureController extends Controller
 {
 
-    public function get(Picture $picture) : JsonResponse
+    public function get(Picture $picture)
     {
-        return response()->json($picture);
+        return new PictureResource($picture);
     }
 
     /**
