@@ -27,7 +27,7 @@ class AlbumController extends Controller
     {
         $validator = validator($request->only('name', 'description', 'isDownload', 'visibility', 'sort'), [
             'name' => 'required|string|max:255',
-            'description' => 'required|string|max:1000',
+            'description' => 'required|string|nullable|max:1000',
             'isDownload' => 'required|boolean',
             'visibility' => 'required|in:private,hidden,public',
             'sort' => 'required|in:created_at,name',

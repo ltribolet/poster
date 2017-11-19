@@ -16,12 +16,14 @@ const REGISTER_URI = '/register';
 Route::post(REGISTER_URI, 'Api\Auth\RegisterController@register');
 
 
-Route::group(['middleware' => 'auth:api'], function(){
-    Route::get('/user/{user}', 'Api\UserController@get');
+Route::group(['middleware' => 'auth:api', 'namespace' => 'Api'], function(){
+        Route::get('/user/{user}', 'UserController@get');
 
-    Route::post('/album/new', 'Api\AlbumController@create');
-    Route::get('/album/{album}', 'Api\AlbumController@get');
-    Route::put('/album/{album}', 'Api\AlbumController@update');
-    Route::delete('/album/{album}', 'Api\AlbumController@delete');
-    Route::get('/albums', 'Api\AlbumController@all');
+        Route::post('/album/new', 'AlbumController@create');
+        Route::get('/album/{album}', 'AlbumController@get');
+        Route::put('/album/{album}', 'AlbumController@update');
+        Route::delete('/album/{album}', 'AlbumController@delete');
+        Route::get('/albums', 'AlbumController@all');
+
+        Route::post('/picture/new', 'PictureController@create');
 });

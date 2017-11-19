@@ -11,8 +11,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RegisterController extends Controller
 {
-    const API_LOGIN_URI = '/api/login';
-
     /**
      * Register api
      *
