@@ -52,7 +52,7 @@ class PictureController extends Controller
         $picture->fill($request->only(['title', 'description']));
         $picture->save();
 
-        return new PictureResource($picture);
+        return (new PictureResource($picture))->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
     /**
@@ -88,7 +88,7 @@ class PictureController extends Controller
                 $request->file('picture')
             );
 
-            return new PictureResource($picture);
+            return (new PictureResource($picture))->response()->setStatusCode(Response::HTTP_CREATED);
         } catch (\Exception $e) {
             $message = $e->getMessage();
             $httpCode = Response::HTTP_INTERNAL_SERVER_ERROR;

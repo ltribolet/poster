@@ -15,7 +15,7 @@ class AlbumController extends Controller
 {
     public function get(Album $album)
     {
-        return new AlbumResource($album);
+        return (new AlbumResource($album))->response()->setStatusCode(Response::HTTP_OK);
     }
 
     public function all()
@@ -27,7 +27,7 @@ class AlbumController extends Controller
     {
         $validator = validator($request->only('name', 'description', 'isDownload', 'visibility', 'sort'), [
             'name' => 'required|string|max:255',
-            'description' => 'required|string|nullable|max:1000',
+            'description' => 'string|nullable|max:1000',
             'isDownload' => 'required|boolean',
             'visibility' => 'required|in:private,hidden,public',
             'sort' => 'required|in:created_at,name',
@@ -40,7 +40,7 @@ class AlbumController extends Controller
         $album->fill($request->all());
         $album->save();
 
-        return new AlbumResource($album);
+        return (new AlbumResource($album))->response()->setStatusCode(Response::HTTP_CREATED);
     }
 
     /**
@@ -78,7 +78,7 @@ class AlbumController extends Controller
 
             $album = $user->albums()->save($album);
 
-            return new AlbumResource($album);
+            return (new AlbumResource($album))->response()->setStatusCode(Response::HTTP_CREATED);
         } catch (\Exception $e) {
             $message = $e->getMessage();
             $httpCode = Response::HTTP_INTERNAL_SERVER_ERROR;
