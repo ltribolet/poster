@@ -5,6 +5,18 @@ RUN apt-get update && apt-get install -y \
     libmcrypt-dev git unzip jpegoptim optipng pngquant gifsicle && \
     docker-php-ext-install pdo_mysql mcrypt exif
 
+# Imagemagick
+RUN apt-get update && apt-get install -y \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libmcrypt-dev \
+        libpng12-dev \
+    libmagickwand-dev \
+    libmagickcore-dev \
+    imagemagick
+
+RUN pecl install imagick-3.4.3 && docker-php-ext-enable imagick
+
 # Install node
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash
 RUN apt-get install -y nodejs

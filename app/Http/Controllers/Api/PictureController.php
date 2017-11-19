@@ -56,13 +56,9 @@ class PictureController extends Controller
     }
 
     /**
-     * @todo : this will probably not gonna make it. Just prototyping for now. It will make more sense in a service.
      *
-     * @param Album $album
-     *
-     * @return JsonResponse
      */
-    public function create(Request $request): JsonResponse
+    public function create(Request $request)
     {
         try {
             $validator = validator(
@@ -85,28 +81,20 @@ class PictureController extends Controller
                 );
             }
 
-            $this->pictureService->savePicture(
+            $picture = $this->pictureService->savePicture(
                 (int) $request->get('albumId'),
                 $request->get('title'),
                 $request->get('description'),
                 $request->file('picture')
             );
-            /*$picture->name = request()->get('name');
-            $picture->description = request()->get('description', '');
-            $picture->isDownload = request()->get(true);
-            $picture->visibility = request()->get('public');
-            $picture->sort = request()->get('created_at');
 
-            $album->pictures()->save($picture);
-
-            $httpCode = Response::HTTP_CREATED;
-            $message = 'Success';*/
+            return new PictureResource($picture);
         } catch (\Exception $e) {
             $message = $e->getMessage();
             $httpCode = Response::HTTP_INTERNAL_SERVER_ERROR;
-        }
 
-        return JsonResponse::create($message, $httpCode);
+            return JsonResponse::create($message, $httpCode);
+        }
     }
 
     public function all(Album $album): PictureCollection
