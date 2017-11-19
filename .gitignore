@@ -1,5 +1,6 @@
 /node_modules
 /public/fonts
+/public/build
 /storage/*.key
 /vendor
 /.idea
@@ -9,3 +10,6 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 .env
+
+# unignore
+!public/build/.gitkeep
