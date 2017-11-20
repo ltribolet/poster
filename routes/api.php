@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,17 +11,19 @@ use Illuminate\Http\Request;
 |
 */
 
-const LOGIN_URI = '/login';
-const LOGIN_REFRESH_URI = '/login/refresh';
 const REGISTER_URI = '/register';
-const LOGOUT_URI = '/logout';
-const USER_URI = '/user';
 
-Route::post(LOGIN_URI, 'Api\Auth\LoginController@login');
-Route::post(LOGIN_REFRESH_URI, 'Api\Auth\LoginController@refresh');
 Route::post(REGISTER_URI, 'Api\Auth\RegisterController@register');
 
-Route::group(['middleware' => 'auth:api'], function(){
-    Route::post(LOGOUT_URI, 'Api\Auth\LoginController@logout');
-    ROute::get(USER_URI, 'Api\UserController@index');
+
+Route::group(['middleware' => 'auth:api', 'namespace' => 'Api'], function(){
+        Route::get('/user/{user}', 'UserController@get');
+
+        Route::post('/album/new', 'AlbumController@create');
+        Route::get('/album/{album}', 'AlbumController@get');
+        Route::put('/album/{album}', 'AlbumController@update');
+        Route::delete('/album/{album}', 'AlbumController@delete');
+        Route::get('/albums', 'AlbumController@all');
+
+        Route::post('/picture/new', 'PictureController@create');
 });

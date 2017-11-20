@@ -5,15 +5,12 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
-use App\User;
+use App\Models\User;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 
 class RegisterController extends Controller
 {
-    const API_LOGIN_URI = '/api/login';
-
     /**
      * Register api
      *
@@ -23,30 +20,47 @@ class RegisterController extends Controller
      */
     public function register(Request $request) : \Illuminate\Http\Response
     {
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'name' => 'required',
-                'email' => 'required|email',
-                'password' => 'required',
-            ]
-        );
+        $validator = validator($request->only('email', 'name', 'password'), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string',
+        ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], Response::HTTP_UNAUTHORIZED);
+            return response()->json($validator->errors()->all(), Response::HTTP_BAD_REQUEST);
         }
 
-        $input = $modifiedInput = $request->all();
-        $modifiedInput['password'] = bcrypt($input['password']);
-        $user = User::create($modifiedInput);
+        $data = request()->only('email','name','password');
 
-        $request = Request::create(self::API_LOGIN_URI, 'POST', $input);
-        $response = App::handle($request);
-
-        if ($response->getStatusCode() >= Response::HTTP_BAD_REQUEST) {
-            throw new HttpResponseException($response);
+        try {
+            User::create(
+                [
+                    'name' => $data['name'],
+                    'email' => $data['email'],
+                    'password' => bcrypt($data['password']),
+                ]
+            );
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERRORT);
         }
 
-        return $response;
+        $client = \Laravel\Passport\Client::where('id', env('PASSWORD_CLIENT_ID'))->first();
+
+        $request->request->add([
+            'grant_type'    => 'password',
+            'client_id'     => $client->id,
+            'client_secret' => $client->secret,
+            'username'      => $data['email'],
+            'password'      => $data['password'],
+            'scope'         => null,
+        ]);
+
+        // Fire off the internal request.
+        $proxy = Request::create(
+            'oauth/token',
+            'POST'
+        );
+
+        return \Route::dispatch($proxy);
     }
 }

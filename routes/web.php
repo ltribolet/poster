@@ -14,3 +14,7 @@
 Route::get('/', function () {
     return view('index');
 });
+
+Route::get('img/{path}', function(\League\Glide\Server $server, $path) {
+    $server->outputImage($path, request()->all());
+})->where('path', '.*');
