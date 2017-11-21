@@ -1,104 +1,138 @@
-var path = require('path')
-var webpack = require('webpack')
+// For info about this file refer to webpack and webpack-hot-middleware documentation
+// For info on how we're generating bundles with hashed filenames for cache busting: https://medium.com/@okonetchnikov/long-term-caching-of-static-assets-with-webpack-1ecb139adb95#.w99i89nsz
+import webpack from 'webpack';
+import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import WebpackMd5Hash from 'webpack-md5-hash';
 
-var javascriptEntryPath = path.resolve(__dirname, 'resources/assets/js', 'app.js')
+import path from 'path';
 
-var cssEntryPath = path.resolve(__dirname, 'resources/assets/sass', 'app.scss')
-var buildPath = path.resolve(__dirname, 'public', 'build')
-var WebpackManifestPlugin = require('webpack-manifest-plugin')
+const GLOBALS = {
+  'process.env.NODE_ENV': JSON.stringify('production'),
+  __DEV__: false,
+};
 
-var ExtractTextPlugin = require('extract-text-webpack-plugin')
-// var CompressionPlugin = require('compression-webpack-plugin')
+let WebpackManifestPlugin = require('webpack-manifest-plugin');
 
-var extractSass = new ExtractTextPlugin({
-  filename: '[name].[contenthash].css'
-})
-
-module.exports = {
-  entry: [javascriptEntryPath, cssEntryPath],
-  output: {
-    path: buildPath,
-    filename: 'bundle.[hash].js'
+export default {
+  resolve: {
+    extensions: ['*', '.js', '.jsx', '.json'],
   },
-  devtool: 'cheap-module-source-map',
+  devtool: 'source-map', // more info:https://webpack.js.org/guides/production/#source-mapping and https://webpack.js.org/configuration/devtool/
+  entry: path.resolve(__dirname, 'resources/assets/js/src', 'index.js'),
+  target: 'web',
+  output: {
+    path: path.resolve(__dirname, 'public', 'build'),
+    publicPath: '/',
+    filename: '[name].[chunkhash].js',
+  },
+  plugins: [
+    new WebpackMd5Hash(),
+    // Tells React to build in prod mode.
+    // https://facebook.github.io/react/downloads.html
+    new webpack.DefinePlugin(GLOBALS),
+    new ExtractTextPlugin('[name].[contenthash].css'),
+    new webpack.optimize.UglifyJsPlugin({ sourceMap: true }),
+    new WebpackManifestPlugin({
+      basePath: '/',
+      fileName: 'mix-manifest.json',
+    }),
+  ],
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         exclude: /node_modules/,
-        loaders: ['babel-loader?compact=true']
+        use: ['babel-loader'],
       },
       {
-        test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url-loader?limit=10000&mimetype=application/font-woff'
+        test: /\.eot(\?v=\d+.\d+.\d+)?$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              name: '[name].[ext]',
+            },
+          },
+        ],
       },
       {
-        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url-loader?limit=10000&mimetype=application/octet-stream'
+        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 10000,
+              mimetype: 'application/font-woff',
+              name: '[name].[ext]',
+            },
+          },
+        ],
       },
       {
-        test: /\.svg$/,
-        loader: 'svg-loader'
+        test: /\.[ot]tf(\?v=\d+.\d+.\d+)?$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 10000,
+              mimetype: 'application/octet-stream',
+              name: '[name].[ext]',
+            },
+          },
+        ],
       },
       {
-        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file-loader'
+        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 10000,
+              mimetype: 'image/svg+xml',
+              name: '[name].[ext]',
+            },
+          },
+        ],
       },
       {
-        test: /\.scss$/,
-        use: extractSass.extract({
+        test: /\.(jpe?g|png|gif|ico)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+            },
+          },
+        ],
+      },
+      {
+        test: /(\.css|\.scss|\.sass)$/,
+        use: ExtractTextPlugin.extract({
           use: [
             {
-              loader: 'css-loader'
+              loader: 'css-loader',
+              options: {
+                minimize: true,
+                sourceMap: true,
+              },
             },
             {
-              loader: 'sass-loader'
-            }
-          ]
-        })
-      }
-    ]
+              loader: 'postcss-loader',
+              options: {
+                plugins: () => [require('autoprefixer')],
+                sourceMap: true,
+              },
+            },
+            {
+              loader: 'sass-loader',
+              options: {
+                includePaths: [path.resolve(__dirname, 'src', 'scss')],
+                sourceMap: true,
+              },
+            },
+          ],
+        }),
+      },
+    ],
   },
-  plugins: [
-    extractSass,
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('production')
-    }),
-    new webpack.optimize.ModuleConcatenationPlugin(),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false,
-        screw_ie8: true,
-        conditionals: true,
-        unused: true,
-        comparisons: true,
-        sequences: true,
-        dead_code: true,
-        evaluate: true,
-        if_return: true,
-        join_vars: true
-      },
-      mangle: {
-        safari10: true
-      },
-      output: {
-        comments: false,
-        // Turned on because emoji and regex is not minified properly using default
-        // https://github.com/facebookincubator/create-react-app/issues/2488
-        ascii_only: true
-      },
-      sourceMap: true
-    }),
-    // new CompressionPlugin({
-    //   asset: '[path].gz[query]',
-    //   algorithm: 'gzip',
-    //   test: /\.js$|\.css$|\.html$|\.eot?.+$|\.ttf?.+$|\.woff?.+$|\.svg?.+$/,
-    //   threshold: 10240,
-    //   minRatio: 0.8
-    // }),
-    new WebpackManifestPlugin({
-      basePath: '/',
-      fileName: 'mix-manifest.json'
-    })
-  ]
-}
+};
