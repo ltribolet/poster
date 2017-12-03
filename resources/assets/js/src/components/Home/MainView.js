@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 
 const MainView = () => {
   return (
@@ -9,4 +8,4 @@ const MainView = () => {
   );
 };
 
-export default connect(null, null)(MainView);
+export default MainView;

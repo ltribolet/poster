@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 
 import Header from './Header';
 
-class App extends React.Component {
+class App extends Component {
   render() {
     return (
       <div>
@@ -15,9 +14,9 @@ class App extends React.Component {
   }
 }
 
-App.contextTypes = {
+App.propTypes = {
   router: PropTypes.object.isRequired,
   children: PropTypes.node,
 };
 
-export default connect(null, null)(App);
+export default App;

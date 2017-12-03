@@ -1,39 +1,37 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-class SignIn extends Component {
+export default class SignIn extends Component {
   email = null;
-  input = null;
+  password = null;
 
   onSubmit = event => {
     event.preventDefault();
 
-    console.log(this.email.value, this.password.value);
+    if (this.email.value && this.password.value) this.props.onUserSignin(this.email.value, this.password.value);
 
     return false;
   };
 
   render() {
     return (
-      <div className="container page">
-        <div className="row">
-          <div className="col-md-3">
-            <form onSubmit={this.onSubmit}>
-              <div>
-                <input type="test" ref={input => (this.email = input)} />
-              </div>
-              <div>
-                <input type="password" ref={input => (this.password = input)} />
-              </div>
-
-              <input type="submit" />
-            </form>
+      <div className="col-md-6 col-md-offset-3">
+        <h2>Login</h2>
+        <form name="form" onSubmit={this.onSubmit}>
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input ref={input => (this.email = input)} type="email" className="form-control" name="email" />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input ref={input => (this.password = input)} type="password" className="form-control" name="password" />
+          </div>
+          <div className="form-group">
+            <button className="btn btn-primary">Login</button>
             <Link to="/">Back to homepage</Link>
           </div>
-        </div>
+        </form>
       </div>
     );
   }
 }
-
-export default SignIn;

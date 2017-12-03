@@ -9,7 +9,7 @@ const Header = ({ appName }) => {
   );
 };
 
-Header.contextTypes = {
+Header.propTypes = {
   appName: PropTypes.string,
 };
 
