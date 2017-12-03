@@ -15,7 +15,6 @@ class App extends Component {
 }
 
 App.propTypes = {
-  router: PropTypes.object.isRequired,
   children: PropTypes.node,
 };
 

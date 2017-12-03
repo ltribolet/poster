@@ -20,11 +20,23 @@ export default class SignIn extends Component {
         <form name="form" onSubmit={this.onSubmit}>
           <div className="form-group">
             <label htmlFor="email">Email</label>
-            <input ref={input => (this.email = input)} type="email" className="form-control" name="email" />
+            <input
+              ref={input => (this.email = input)}
+              type="email"
+              className="form-control"
+              name="email"
+              defaultValue="damien@bonnay.com"
+            />
           </div>
           <div className="form-group">
             <label htmlFor="password">Password</label>
-            <input ref={input => (this.password = input)} type="password" className="form-control" name="password" />
+            <input
+              ref={input => (this.password = input)}
+              type="password"
+              className="form-control"
+              name="password"
+              defaultValue="damien@bonnay.com"
+            />
           </div>
           <div className="form-group">
             <button className="btn btn-primary">Login</button>
