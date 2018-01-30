@@ -9,7 +9,7 @@
     </head>
     <body>
     <h2 style="text-align: center"> Front </h2>
-        <div id="root"></div>
+        <div id="app"></div>
         <script src="{{mix('main.js', 'build')}}" ></script>
     </body>
 </html>
